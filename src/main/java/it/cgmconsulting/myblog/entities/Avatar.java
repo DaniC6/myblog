@@ -20,7 +20,7 @@ public class Avatar {
     @Column(length = 50, nullable = false)
     private String filetype;
     @Lob
-    @Column(nullable = false, columnDefinition = "BLOB")
+    @Column(nullable = false, columnDefinition = "BLOB") //columnDefinition = non di uso comune , casi eccezionali come questo, dove l annotazione Lob crea un tyniblob e non un blob
     private byte[] data;
 
     public Avatar(String filename, String filetype, byte[] data) {
