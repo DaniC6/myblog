@@ -47,4 +47,7 @@ public class Post extends CreationUpdate {
         comment.setPost(this);
     }
 
+
+    private double average;
+
 }
