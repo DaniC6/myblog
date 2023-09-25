@@ -16,10 +16,10 @@ public class Category {
     @EqualsAndHashCode.Include
     private byte id;
     @Column(nullable = false, unique = true, length = 30)
-    private String category_name;
+    private String categoryName;
     private boolean visible = true;
 
     public Category(String category_name) {
-        this.category_name = category_name;
+        this.categoryName = category_name;
     }
 }

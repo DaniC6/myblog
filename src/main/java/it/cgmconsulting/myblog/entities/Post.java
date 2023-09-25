@@ -29,8 +29,7 @@ public class Post extends CreationUpdate {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)// a un post possono essere associati n commenti,
-                                                                                  // la mappatura dipende da post su comment,
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)// a un post possono essere associati n commenti, la mappatura dipende da post su comment,
                                                                                   // cascade qualsiasi operazione faccio su post si puo ripercuotere sulla lista dei commenti
                                                                                   // orphan se cancelli un post cancelli tutti i commenti legati a quel post
     private List<Comment> comments = new ArrayList<>();

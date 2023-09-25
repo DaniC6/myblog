@@ -13,6 +13,14 @@ spring:
     password: ${DATABASE_MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  data:
+    jpa:
+      repositories:
+        #DEFAULT: i repository vengono controllati all'avvio dell'applicazione
+        #DEFERRED: vengono controllati i repository in maniera differita, (i repositories controllati all'avvio dell applicazione ma in maniera asincrona)
+        #LAZY: i repository vengono controllati solo quando sono richiamati ( quando il controller chiede query per aver risultato)
+        bootstrap-mode: DEFAULT
+
   #Configurazione jpa
 
   jpa:

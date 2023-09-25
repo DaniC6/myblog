@@ -17,8 +17,8 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode
- //nel momento in cui metto il voto non c è modo di sbagliare i
-                                                // valori perche il check(controllo) fa si che il rate sia da 1 a 5
+//nel momento in cui metto il voto non c è modo di sbagliare i
+// valori perche il check(controllo) fa si che il rate sia da 1 a 5
 public class Rating extends CreationUpdate {
 
     @EmbeddedId
