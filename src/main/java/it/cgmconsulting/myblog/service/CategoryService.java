@@ -1,7 +1,9 @@
 package it.cgmconsulting.myblog.service;
 
 import it.cgmconsulting.myblog.entities.Category;
+import it.cgmconsulting.myblog.exception.ResourceNotFoundException;
 import it.cgmconsulting.myblog.repository.CategoryRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -51,16 +53,29 @@ public class CategoryService {
             return new ResponseEntity<> ( "Category " + newCategory +  " already present", HttpStatus.BAD_REQUEST );
         }
 
+        /*
         Optional<Category> cat = categoryRepository.findById ( id );
         if(!cat.isPresent()){
             log.info("No category found");
             return new ResponseEntity<> ( "No category found with id: " + id, HttpStatus.NOT_FOUND );
-        }else{
-            cat.get().setCategoryName ( newCategory );
-            categoryRepository.save ( cat.get () );
-        }
+            */
+        Category cat = categoryRepository.findById(id)
+                .orElseThrow (()-> new ResourceNotFoundException("Category", "id", id )); //metodo elegante per gestire un'eccezione (sugli Optional)
+       // }else{
+            cat.setCategoryName ( newCategory );
+            categoryRepository.save ( cat);
+            return new ResponseEntity<String> ("Category has been update",HttpStatus.OK);
 
-        return new ResponseEntity<> ( "Category has been updated",HttpStatus.OK );
+    }
+
+
+    @Transactional// tramite questa ann. non avremo piu bisogno di salvare l entita ---> categoryRepository.save(cat); la Transazione rimane aperta (non deve piu controllare se la categoria esiste o meno nel DB, reacchiude tutto in una transazione, il metodo update lo fara lui da solo
+    public ResponseEntity<?> switchVisibility(byte id){
+        Category cat = categoryRepository.findById(id)
+                .orElseThrow (()-> new ResourceNotFoundException("Category", "id", id ));
+        cat.setVisible (!cat.isVisible());
+        //categoryRepository.save ( cat );
+        return new ResponseEntity<>( null,HttpStatus.OK );
 
     }
 

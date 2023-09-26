@@ -42,4 +42,12 @@ public class CategoryController {
     public ResponseEntity<?> update(@PathVariable byte id,@RequestBody String newCategory){
         return categoryService.update(id,newCategory);
     }
+
+
+    @PutMapping("/swtc/{id}")
+    public ResponseEntity<?> switchVisibility(@PathVariable byte id){
+        return categoryService.switchVisibility ( id );
+    }
+
+
 }

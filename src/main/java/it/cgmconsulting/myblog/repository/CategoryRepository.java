@@ -16,9 +16,10 @@ public interface CategoryRepository extends JpaRepository<Category,Byte>{
     boolean existsByCategoryName(String categoryName);
 
 
+
     List<Category> findAllByVisibleTrue();
 
-    // JPQL (java persistence query language)
+    // JPQL (java persistence query language) scrivendo con questa sintassi succedeche è hibernate a generare la querysql capendo l'sql che usiamo, nel momento in cui cambia db basta cambiare impostazione nello yaml
     @Query("SELECT new it.cgmconsulting.myblog.payload.response.CategoryVisibleResponse(cat.id, cat.categoryName) FROM Category cat WHERE cat.visible = true ORDER BY cat.categoryName")
     List<CategoryVisibleResponse> getAllVisibleCategories();
 

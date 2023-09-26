@@ -14,4 +14,9 @@ public class ExceptionManagement {
        return new ResponseEntity<String> ( ex.getMessage (), HttpStatus.BAD_REQUEST );
     }
 
+    @ExceptionHandler({ResourceNotFoundException.class})
+    public ResponseEntity<?> ResourceNotFoundException (ResourceNotFoundException ex) {
+        return new ResponseEntity<String> ( ex.getMessage (), HttpStatus.NOT_FOUND );
+    }
+
 }
