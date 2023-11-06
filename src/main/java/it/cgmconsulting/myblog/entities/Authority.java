@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-//@Table(name = "oakokakoak") qualora volessimo chiamare diveramente dalla classe la tabella (@Table)
+//@Table(name = "oakokakoak") qualora volessimo chiamare diversamente dalla classe la tabella (@Table)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,6 +19,7 @@ public class Authority {
     @Column(length = 30, nullable = false, unique = true)
     private String authorityName;
     private boolean visible = true;
+    private boolean defaultAuthority = false; // serve a definire ruolo di default al momento in cui si registra un utente
     public Authority(String authorityName){
         this.authorityName = authorityName;
     }

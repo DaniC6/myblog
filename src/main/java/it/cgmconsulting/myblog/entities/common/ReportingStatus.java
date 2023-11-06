@@ -4,5 +4,5 @@ public enum ReportingStatus {
     OPEN,
     IN_PROGRESSS,
     CLOSED_WITH_BAN,
-    CLOSED_WITHOUT_BAN
+    IN_PROGRESS, CLOSED_WITHOUT_BAN
 }

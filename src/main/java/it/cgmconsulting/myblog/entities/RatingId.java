@@ -8,8 +8,7 @@ import lombok.*;
 import java.io.Serializable; //trasforma gli oggetti i array di byte in modo da poter essere trasferiti altrove
 
 @Embeddable // si usa per PK composite o quando la PK è anche una FK
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @ToString
-@EqualsAndHashCode
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @ToString @EqualsAndHashCode
 public class RatingId implements Serializable {
 
     @ManyToOne

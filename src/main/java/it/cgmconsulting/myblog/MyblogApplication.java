@@ -2,6 +2,7 @@ package it.cgmconsulting.myblog;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 
 /**
  * @SpringBootApplication
@@ -9,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * si auto configura (in assenza di determinate proprietà nell app properties prende quelle di default)
  */
 @SpringBootApplication
+@EnableCaching
 public class MyblogApplication {
 
 	public static void main(String[] args) {

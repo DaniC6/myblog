@@ -2,6 +2,8 @@ package it.cgmconsulting.myblog.service;
 
 import it.cgmconsulting.myblog.entities.Category;
 import it.cgmconsulting.myblog.exception.ResourceNotFoundException;
+import it.cgmconsulting.myblog.exception.UniqueConstraintViolationException;
+import it.cgmconsulting.myblog.payload.response.CategoryVisibleResponse;
 import it.cgmconsulting.myblog.repository.CategoryRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -10,74 +12,66 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j //  private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CategoryService.class);
 @RequiredArgsConstructor
-@Slf4j // ci crea automaticamente un oggetto di tipo log
 public class CategoryService {
 
-    //miglior soluzione rispetto all'@Autowired perchè l annotazione è riconosciuta solamente da SpringBoot
     private final CategoryRepository categoryRepository;
-
-
+    private final UtilsService utilsService;
 
     public ResponseEntity<?> save(String categoryName){
-        log.info ( "Category persistence start" );
-        if(categoryRepository.existsByCategoryName(categoryName)){
-            log.info ( "Category already present" );
-            return new ResponseEntity<> ( "Category already present", HttpStatus.BAD_REQUEST );
-        }else{
-            Category cat = new Category (categoryName);
-            categoryRepository.save(cat);
-            log.info ( "Category persisted: " + cat.toString () );
-            return  new ResponseEntity<> ( cat,HttpStatus.CREATED );
-        }
+        log.info("Category persistence start");
+        existsByCategoryName(categoryName);
+        Category cat = new Category(categoryName);
+        categoryRepository.save(cat);
+        log.info("Category persisted: "+cat.toString());
+        return new ResponseEntity(cat, HttpStatus.CREATED);
     }
 
-    public ResponseEntity<?> getAllVisibleCategories() {
-        log.info("Get all visible categories");
-        return new ResponseEntity<>(categoryRepository.getAllVisibleCategories (),HttpStatus.OK);
+    public ResponseEntity<?> getAllVisibleCategories(){
+        log.info("Get all visible categories ordered by category name");
+        List<CategoryVisibleResponse> list = categoryRepository.getAllVisibleCategories();
+        utilsService.isEmptyCollection(list, "categories");
+        return new ResponseEntity(list, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> findAll() {
-        log.info ("Get all categories");
-        return new ResponseEntity<> (categoryRepository.findAll(),HttpStatus.OK);
+    public ResponseEntity<?> findAll(){
+        log.info("Get all categories");
+        List<Category> list = categoryRepository.findAll();
+        utilsService.isEmptyCollection(list, "categories");
+        return new ResponseEntity(list, HttpStatus.OK);
     }
 
-    //put categoryName e visible separatamente
-
-    public ResponseEntity<?> update(byte id,String newCategory){
-        if(categoryRepository.existsByCategoryName ( newCategory )){
-            log.info ( "Category already present" );
-            return new ResponseEntity<> ( "Category " + newCategory +  " already present", HttpStatus.BAD_REQUEST );
-        }
-
-        /*
-        Optional<Category> cat = categoryRepository.findById ( id );
-        if(!cat.isPresent()){
-            log.info("No category found");
-            return new ResponseEntity<> ( "No category found with id: " + id, HttpStatus.NOT_FOUND );
-            */
-        Category cat = categoryRepository.findById(id)
-                .orElseThrow (()-> new ResourceNotFoundException("Category", "id", id )); //metodo elegante per gestire un'eccezione (sugli Optional)
-       // }else{
-            cat.setCategoryName ( newCategory );
-            categoryRepository.save ( cat);
-            return new ResponseEntity<String> ("Category has been update",HttpStatus.OK);
-
+    public ResponseEntity<?> update(byte id, String newCategory){
+        existsByCategoryName(newCategory);
+        Category cat =  getCategoryById(id);
+        cat.setCategoryName(newCategory);
+        categoryRepository.save(cat);
+        return new ResponseEntity("Category has been updated", HttpStatus.OK);
     }
 
-
-    @Transactional// tramite questa ann. non avremo piu bisogno di salvare l entita ---> categoryRepository.save(cat); la Transazione rimane aperta (non deve piu controllare se la categoria esiste o meno nel DB, reacchiude tutto in una transazione, il metodo update lo fara lui da solo
+    @Transactional
     public ResponseEntity<?> switchVisibility(byte id){
-        Category cat = categoryRepository.findById(id)
-                .orElseThrow (()-> new ResourceNotFoundException("Category", "id", id ));
-        cat.setVisible (!cat.isVisible());
-        //categoryRepository.save ( cat );
-        return new ResponseEntity<>( null,HttpStatus.OK );
-
+        Category cat =  getCategoryById(id);
+        cat.setVisible(!cat.isVisible());
+        return new ResponseEntity(null, HttpStatus.OK);
     }
 
+    protected void existsByCategoryName(String categoryName){
+        if(categoryRepository.existsByCategoryName(categoryName))
+            throw new UniqueConstraintViolationException("Category", "category name", categoryName);
+    }
+
+    protected Category getCategoryByIdAndVisibleTrue(byte categoryId){
+        return categoryRepository.findByIdAndVisibleTrue(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryId));
+    }
+
+    protected Category getCategoryById(byte categoryId){
+        return categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryId));
+    }
 
 }

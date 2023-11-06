@@ -10,12 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Embeddable
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
-@EqualsAndHashCode
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @ToString @EqualsAndHashCode
 public class ReasonId implements Serializable {
 
     @Column(length = 50 , nullable = false)

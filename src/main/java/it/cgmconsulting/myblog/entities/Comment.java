@@ -5,13 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@ToString
-@EqualsAndHashCode
+@Getter @Setter @NoArgsConstructor @ToString @EqualsAndHashCode
 public class Comment extends Creation {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +14,7 @@ public class Comment extends Creation {
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="author", nullable = false)
+    @JoinColumn(name = "author", nullable = false)
     private User author;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -30,7 +25,6 @@ public class Comment extends Creation {
     private String comment;
 
     private boolean censored = false;
-
 
     public Comment(User author, Post post, String comment) {
         this.author = author;
